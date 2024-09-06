@@ -221,7 +221,7 @@ class ConstructorDecimalTest extends TestCase
 	 * @return int
 	 */
 	private function randInt () : int
-	{ return (int)\floor( $this->random() * 0x20000000000000 / \pow(10, $this->random() * 16 | 0) ); }
+    { return (int)\floor( $this->random() * 0x20000000000000 / \pow(10, (int)($this->random() * 16)) ); }
 
 	/**
 	 * Get random between 0 and 1.
@@ -238,7 +238,7 @@ class ConstructorDecimalTest extends TestCase
 	 * @param string $prefix
 	 * @return array
 	 */
-	private function prepareRandom ( $base = 10, $prefix ) : array
+	private function prepareRandom ( $base, $prefix ) : array
 	{
 		$r = $this->randInt();
 		return [\strval($r),  $prefix.\strval(\base_convert($r, 10, $base))];

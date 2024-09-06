@@ -1067,7 +1067,7 @@ class Decimal
 
 			// Estimate the optimum number of times to use the argument reduction.
 			$k = 1.4 * \sqrt($len);
-			$k = $k > 16 ? 16 : $k | 0;
+			$k = (int)($k > 16 ? 16 : $k);
 
 			$x = $x->times(1/Math::tinyPow(5,$k));
 			$x = static::__taylorSeries($c, 2, $x, $x, true);
@@ -1671,7 +1671,7 @@ class Decimal
 		// Ensure |x| < 0.42
 		// atan(x) = 2 * atan(x / (1 + sqrt(1 + x^2)))
 
-		$k = \min(28, (($wpr/static::LOG_BASE+2) | 0));
+		$k = \min(28, ((int)($wpr/static::LOG_BASE+2)));
 		
 		for ( $i = $k; $i; --$i )
 		{ $x = $x->div($x->times($x)->plus(1)->sqrt()->plus(1)); }
@@ -2736,7 +2736,7 @@ class Decimal
 		// digits of xd can be left as they are.
 		for ( $carry = 0; $i; )
 		{
-			$carry = (($xd[--$i] = $xd[$i] + $yd[$i] + $carry) / static::BASE) | 0;
+			$carry = (int)(($xd[--$i] = $xd[$i] + $yd[$i] + $carry) / static::BASE);
 			$xd[$i] %= static::BASE;
 		}
 
@@ -2868,7 +2868,7 @@ class Decimal
 		else
 		{
 			for (; $i < $k;) 
-			{ $rd[$i++] = ((\mt_rand() / \mt_getrandmax()) * 1e7) | 0; }
+			{ $rd[$i++] = ((int)((\mt_rand() / \mt_getrandmax()) * 1e7)); }
 		}
 
 		$k = $rd[--$i];
@@ -2878,7 +2878,7 @@ class Decimal
 		if ( $k && $sd )
 		{
 			$n = \pow(10, static::LOG_BASE - $sd);
-			$rd[$i] = (($k/$n) | 0) * $n;
+			$rd[$i] = ((int)($k/$n)) * $n;
 		}
 
 		// Remove trailing words which are zero.
@@ -3368,11 +3368,11 @@ class Decimal
 			for ( $k = $xdl + $i; $k > $i; )
 			{
 				$t = $r[$k] + $yd[$i] * $xd[$k-$i-1] + $carry;
-				$r[$k--] = $t % static::BASE | 0;
-				$carry = $t / static::BASE | 0;
+				$r[$k--] = (int)($t % static::BASE);
+				$carry = (int)($t / static::BASE);
 			}
 
-			$r[$k] = ($r[$k] + $carry) % static::BASE | 0;
+			$r[$k] = (int)(($r[$k] + $carry) % static::BASE);
 		}
 
 		// Remove trailing zeros
@@ -4294,7 +4294,7 @@ class Decimal
 					$w = $xd[($xdi = 0)];
 
 					// Get the rounding digit at index j of w.
-					$rd = $w / \pow(10, $digits - $j - 1) % 10 | 0;
+					$rd = (int)((int)($w / \pow(10, $digits - $j - 1)) % 10);
 				}
 				else
 				{
@@ -4335,7 +4335,7 @@ class Decimal
 						$j = $i - static::LOG_BASE + $digits;
 
 						// Get the rounding digit at index j of w.
-						$rd = $j < 0 ? 0 : $w / \pow(10, $digits - $j - 1 ) % 10 | 0;
+                        $rd = $j < 0 ? 0 : (int)($w / \pow(10, $digits - $j - 1 )) % 10;
 					}
 				}
 
@@ -4352,12 +4352,12 @@ class Decimal
 							$isTruncated ||
 							($rm == 6 &&
 								// Check whether the digit to the left of the rounding digit is odd.
-								($i > 0 ?
+                                (int)(($i > 0 ?
 									($j > 0 ?
-									$w / \pow(10, $digits - $j) :
+                                    (int)($w / \pow(10, $digits - $j)) :
 									0) :
-									$xd[$xdi - 1]??0) %
-								10 &
+									$xd[$xdi - 1] ?? 0) %
+								10) &
 								1) ||
 							$rm == ($x->_s < 0 ? 8 : 7)));
 
@@ -4399,7 +4399,7 @@ class Decimal
 
 					// E.g. 56700 becomes 56000 if 7 is the rounding digit.
         			// j > 0 means i > number of leading zeros of w.
-					$xd[$xdi] = $j > 0 ? ($w / \pow(10, $digits - $j) % \pow(10, $j) | 0) * $k : 0;
+                    $xd[$xdi] = $j > 0 ? (int)((int)((int)($w / \pow(10, $digits - $j)) % \pow(10, $j))) * $k : 0;
 				}
 
 				if ( $roundUp )
@@ -4604,7 +4604,7 @@ class Decimal
 		{
 			// Convert precision in number of base 
 			// 10 digits to base 1e7 digits
-			$sd = $sd / $logBase + 2 | 0;
+			$sd = (int)($sd / $logBase + 2);
 			$i = 0;
 
 			// divisor < 1e7
@@ -4618,8 +4618,8 @@ class Decimal
 				for (; ( $i < $xl || $k ) && $sd--; $i++ )
 				{
 					$t = $k * $base + \intval($xd[$i] ?? 0);
-					$qd[$i] = $t / $yd | 0;
-					$k = $t % $yd | 0;
+					$qd[$i] = (int)($t / $yd);
+					$k = (int)($t % $yd);
 				}
 
 				$more = $k || $i < $xl;
@@ -4629,7 +4629,7 @@ class Decimal
 			{
 				// Normalise xd and yd so highest 
 				// order digit of yd is >= base/2
-				$k = $base / ($yd[0] + 1) | 0;
+				$k = (int)($base / ($yd[0] + 1));
 
 				if ( $k > 1 ) 
 				{
@@ -4672,7 +4672,7 @@ class Decimal
 						{ $rem0 = $rem0 * $base + ($rem[1] ?? 0); }
 
 						// k will be how many times the divisor goes into the current remainder.
-						$k = $rem0 / $yd0 | 0;
+						$k = (int)($rem0 / $yd0);
 
 						//  Algorithm:
 						//  1. product = divisor * trial digit (k)
@@ -5116,7 +5116,7 @@ class Decimal
 		// to estimate the increase in precision
 		// necessary to ensure the first 4 rounding 
 		// digits are correct.
-		$guard = ((\log(\pow(2, $k))/\M_LN10) * 2 + 5 ) | 0;
+		$guard = (int)((\log(\pow(2, $k))/\M_LN10) * 2 + 5 );
 
 		$wpr += $guard;
 
@@ -5615,7 +5615,7 @@ class Decimal
 
 		// Estimate the optimum number of times to use the argument reduction.
 		$k = 1.4 * \sqrt($len);
-		$k = $k > 16 ? 16 : $k | 0;
+		$k = (int)($k > 16 ? 16 : $k);
 
 		$x = $x->times(1/Math::tinyPow(5, $k));
 		$x = static::__taylorSeries($c, 2, $x, $x);

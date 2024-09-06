@@ -115,9 +115,9 @@ class Math
 			if ( $i < 3 )
 			{
 				if ( $i == 0 )
-				{ $rd = ($rd/100) | 0; }
+				{ $rd = (int)($rd/100); }
 				else if ( $i == 1 )
-				{ $rd = ($rd/10) | 0; }
+				{ $rd = (int)($rd/10); }
 
 				$r = (
 					($rm < 4 && $rd == 99999) || 
@@ -142,11 +142,11 @@ class Math
 			if ( $i < 4 )
 			{
 				if ( $i == 0 )
-				{ $rd = ($rd/1000) | 0; }
+				{ $rd = (int)($rd/1000); }
 				else if ( $i == 1 )
-				{ $rd = ($rd/100) | 0; }
+				{ $rd = (int)($rd/100); }
 				else if ( $i == 2 )
-				{ $rd = ($rd/10) | 0; }
+				{ $rd = (int)($rd/10); }
 
 				$r = (($repeating || $rm < 4) && $rd == 9999) 
 						|| (!$repeating && $rm > 3 && $rd == 4999);
@@ -201,7 +201,7 @@ class Math
 					if ( !isset($arr[$j+1]) )
 					{ $arr[$j+1] = 0; }
 
-					$arr[$j+1] += \intval($arr[$j] / $baseOut | 0);
+					$arr[$j+1] += \intval($arr[$j] / $baseOut);
 					$arr[$j] %= $baseOut;
 				}
 			}
@@ -597,8 +597,8 @@ class Math
 		for ( $x = $x; $i--; )
 		{
 			$temp = $x[$i] * $k + $carry;
-			$x[$i] = $temp % $base | 0;
-			$carry = $temp / $base | 0;
+			$x[$i] = (int)($temp % $base);
+			$carry = (int)($temp / $base);
 		}
 
 		if ( $carry )
